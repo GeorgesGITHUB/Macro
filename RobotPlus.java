@@ -1,8 +1,10 @@
 import java.awt.Robot;
 import java.awt.AWTException;
+import java.time.LocalTime;
 
 public class RobotPlus extends Robot 
 {
+    LocalTime time;
     // Constructors
     /* 
     Robot requires to catch an AWTException upon instantiating.
@@ -10,11 +12,12 @@ public class RobotPlus extends Robot
     whatever initialises RobotPlus. 
     Fitting because RobotPlus is an extension of Robot.
     */
-    public RobotPlus() throws AWTException { super(); }
+    public RobotPlus() throws AWTException { super(); time = LocalTime.now();}
 
     public RobotPlus(int millisecond) throws AWTException { 
         super();
         super.setAutoDelay(millisecond);
+        time = LocalTime.now();
     }
 
     // Class functions
@@ -28,36 +31,44 @@ public class RobotPlus extends Robot
 
     public void keyTap(int keycode){
         super.keyPress(keycode); super.keyRelease(keycode);
+        println("Key Tapped");
     }
 
     public void mouseClick(int button){
         super.mousePress(button); super.mouseRelease(button);
+        println("Mouse Clicked");
     }
 
     public void keyTap(int keycode, int repeat){
-        for(int i=0; i<repeat; i++){ keyTap(keycode); }
+        for(int i=0; i<repeat; i++){
+            keyTap(keycode);
+            String msg = "Key Taps Remaining :"+Integer.toString(repeat-i);
+            println(msg);
+        }
     }
 
     public void mouseClick(int button, int repeat){
-        for(int i=0; i<repeat; i++){ mouseClick(button); }
+        for(int i=0; i<repeat; i++){ 
+            mouseClick(button);
+            String msg = "Mouse Clicks Remaining :"+Integer.toString(repeat-i);
+            println(msg);
+        }
     }
     
-    private int min_to_repeat(int min){ 
-        return (int)( (double)(min * 60000) / (double)getActionDelay() ); }
-
-    private int repeat_to_min(int repeat){ 
-        return (int)( (double)( repeat*getActionDelay() ) / (double)60000 ) ; }
-
     public void keyTapTimed(int keycode, int minute){
-        int repeat = min_to_repeat(minute);
-        //System.out.println(repeat);
-        for(int i=0; i<repeat; i++){ keyTap(keycode); }
+        LocalTime target = time.plusMinutes(minute);
+        while( LocalTime.now().compareTo(target)<0 ){ keyTap(keycode); }
     }
 
     public void mouseClickTimed(int button, int minute){
-        int repeat = min_to_repeat(minute);
-        for(int i=0; i<repeat; i++){ mouseClick(button); }
+        LocalTime target = time.plusMinutes(minute);
+        while( LocalTime.now().compareTo(target)<0 ){ mouseClick(button); }
     }
+
+    // For code readability
+    static void println(Object o){ System.out.println(o);}
+    static void print(Object o){ System.out.print(o);}
+    static void println(){ System.out.println();}
 
     
 }
