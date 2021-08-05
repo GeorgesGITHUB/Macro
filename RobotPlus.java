@@ -1,6 +1,7 @@
 import java.awt.Robot;
 import java.awt.AWTException;
 import java.time.LocalTime;
+import java.util.concurrent.TimeUnit;
 
 public class RobotPlus extends Robot 
 {
@@ -56,8 +57,11 @@ public class RobotPlus extends Robot
     }
     
     public void keyTapTimed(int keycode, int minute){
-        LocalTime target = time.plusMinutes(minute);
-        while( LocalTime.now().compareTo(target)<0 ){ keyTap(keycode); }
+        long target = System.nanoTime() + TimeUnit.MINUTES.toNanos(minute);
+        println(target); //DEBUG
+        while( target > System.nanoTime() ){ 
+            println("while condition met"); //DEBUG
+            keyTap(keycode); }
     }
 
     public void mouseClickTimed(int button, int minute){

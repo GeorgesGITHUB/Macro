@@ -15,8 +15,26 @@ public class Driver
             System.exit(-1);
         }
 
-        Scanner input = new Scanner(System.in);
+        welcomeMSG();
 
+        println("Enter number of minutes to swipe for: ");
+
+        Scanner input = new Scanner(System.in);
+        int minute = Integer.parseInt(input.nextLine());
+
+
+        println("Swiping for " + Integer.toString(minute) + " minutes");
+        
+        println("Left Click");
+        bot.mouseClick(InputEvent.BUTTON1_MASK);
+        println("Starting key taps");
+        
+        bot.keyTapTimed(KeyEvent.VK_RIGHT, minute);
+        println("DONE");
+        
+    }
+    
+    static void welcomeMSG(){
         String msg = "* " + "Welcome to Macro" + " *";
         for(int i=0; i<msg.length()+4; i++){print("*");}
         println();
@@ -24,16 +42,6 @@ public class Driver
         println();
         for(int i=0; i<msg.length()+4; i++){print("*");}
         println();
-
-        println("Enter number of minutes to swipe for: ");
-        int minute = Integer.parseInt(input.nextLine());
-        println("Entered Successfully");
-
-        println("Left Click");
-        bot.mouseClick(InputEvent.BUTTON1_MASK);
-        println("Starting key taps");
-        
-        bot.keyTapTimed(KeyEvent.VK_RIGHT, minute);
         
     }
 
