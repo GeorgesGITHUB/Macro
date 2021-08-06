@@ -1,78 +1,83 @@
 import java.awt.Robot;
 import java.awt.AWTException;
-import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.Point;
 
-public class RobotPlus extends Robot 
+public class RobotPlus 
 {
-    LocalTime time;
-    // Constructors
-    /* 
-    Robot requires to catch an AWTException upon instantiating.
-    "throws AWTException" allows exception handling to be passed to
-    whatever initialises RobotPlus. 
-    Fitting because RobotPlus is an extension of Robot.
-    */
-    public RobotPlus() throws AWTException { super(); time = LocalTime.now();}
+    //instance variables
+    boolean debug=false;
+    Robot robot=null;
 
-    public RobotPlus(int millisecond) throws AWTException { 
-        super();
-        super.setAutoDelay(millisecond);
-        time = LocalTime.now();
+    // Constructor
+    //Robot instantiation requires to catch an AWTException
+    public RobotPlus(int mode) throws AWTException {
+        robot = new Robot();
+        debug = ( mode == -1 ) ? true : false;
     }
 
-    // Class functions
-    public void setActionDelay(int millisecond){
-        super.setAutoDelay(millisecond);
+    public long duration(int time, String unit){
+        //More options available in TimeUnit Class
+        switch(unit)
+        {
+            case "seconds":
+                return System.nanoTime() + TimeUnit.SECONDS.toNanos(time);
+            case "minutes":
+                return System.nanoTime() + TimeUnit.MINUTES.toNanos(time);
+            case "hours":
+                return System.nanoTime() + TimeUnit.HOURS.toNanos(time);
+            default:
+                println("unable to handle given unit in RobotPLus.duration \nLikely Syntax Error\nReturning 0");
+                return 0;
+        }
     }
-
-    public int getActionDelay(){
-        return super.getAutoDelay();
-    }
-
+//Keyboard functions
     public void keyTap(int keycode){
-        super.keyPress(keycode); super.keyRelease(keycode);
-        println("Key Tapped");
-    }
-
-    public void mouseClick(int button){
-        super.mousePress(button); super.mouseRelease(button);
-        println("Mouse Clicked");
+        robot.keyPress(keycode); robot.keyRelease(keycode);
     }
 
     public void keyTap(int keycode, int repeat){
         for(int i=0; i<repeat; i++){
             keyTap(keycode);
-            String msg = "Key Taps Remaining :"+Integer.toString(repeat-i);
-            println(msg);
         }
+    }
+
+    public void keyTapTimed(int keycode, int time, String unit){
+        long target = duration(time, unit);
+        while( target > System.nanoTime() ){ keyTap(keycode); }
+    }
+
+//Mouse functions
+    public void mouseClick(int button){
+        robot.mousePress(button); robot.mouseRelease(button);
     }
 
     public void mouseClick(int button, int repeat){
         for(int i=0; i<repeat; i++){ 
             mouseClick(button);
-            String msg = "Mouse Clicks Remaining :"+Integer.toString(repeat-i);
-            println(msg);
         }
     }
-    
-    public void keyTapTimed(int keycode, int minute){
-        long target = System.nanoTime() + TimeUnit.MINUTES.toNanos(minute);
-        println(target); //DEBUG
-        while( target > System.nanoTime() ){ 
-            println("while condition met"); //DEBUG
-            keyTap(keycode); }
+
+    public void mouseClickTimed(int button, int time, String unit){
+        long target = duration(time, unit);
+        while( target > System.nanoTime() ){ mouseClick(button); }
     }
 
-    public void mouseClickTimed(int button, int minute){
-        LocalTime target = time.plusMinutes(minute);
-        while( LocalTime.now().compareTo(target)<0 ){ mouseClick(button); }
-    }
+    //Frequently Used Functions
+    public void leftMouseClick(){ mouseClick(KeyEvent.BUTTON1_MASK);}
+    public void rightArrowPress(){ keyTap(KeyEvent.VK_RIGHT);}
+    public void leftMouseClick(int button, int time, String unit){ mouseClickTimed(KeyEvent.BUTTON1_MASK, time, unit);}
+    public void rightArrowPress(int button, int time, String unit){ keyTapTimed(KeyEvent.VK_RIGHT, time, unit);}
 
-    // For code readability
+//Parent Getters Setters
+    public void setActionDelay(int millisecond){ robot.setAutoDelay(millisecond); }
+    public int getActionDelay(){ return robot.getAutoDelay(); }
+
+//Syntax Beautifier Code
     static void println(Object o){ System.out.println(o);}
-    static void print(Object o){ System.out.print(o);}
     static void println(){ System.out.println();}
+    static void print(Object o){ System.out.print(o);}
 
-    
 }

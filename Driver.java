@@ -7,42 +7,20 @@ public class Driver
 {
     public static void main(String args[]){
     
-        // RobotPlus requires AWTException to be handled
-        RobotPlus bot =null;
-        try { bot = new RobotPlus(200); }
-        catch (AWTException e) { 
-            println("RobotPlus failed to initialise");
-            System.exit(-1);
-        }
-
-        welcomeMSG();
+        RobotPlus bot= new RobotPlus();
 
         println("Enter number of minutes to swipe for: ");
 
         Scanner input = new Scanner(System.in);
-        int minute = Integer.parseInt(input.nextLine());
+        int minutes = Integer.parseInt(input.nextLine());
+        input=null;
 
-
-        println("Swiping for " + Integer.toString(minute) + " minutes");
+        println("Swiping for " + Integer.toString(minutes) + " minutes");
         
-        println("Left Click");
-        bot.mouseClick(InputEvent.BUTTON1_MASK);
-        println("Starting key taps");
+        bot.leftMouseClick();
+        bot.rightArrowPress(minutes, "minutes");
         
-        bot.keyTapTimed(KeyEvent.VK_RIGHT, minute);
         println("DONE");
-        
-    }
-    
-    static void welcomeMSG(){
-        String msg = "* " + "Welcome to Macro" + " *";
-        for(int i=0; i<msg.length()+4; i++){print("*");}
-        println();
-        print(msg);
-        println();
-        for(int i=0; i<msg.length()+4; i++){print("*");}
-        println();
-        
     }
 
     // For code readability
