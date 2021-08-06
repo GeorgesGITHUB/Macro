@@ -5,18 +5,37 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.Point;
 
-public class RobotPlus 
+import java.awt.Point;
+import java.awt.MouseInfo;
+import java.awt.PointerInfo;
+
+public class RobotPlus extends Robot
 {
     //instance variables
     boolean debug=false;
-    Robot robot=null;
 
     // Constructor
     //Robot instantiation requires to catch an AWTException
+    public RobotPlus() throws AWTException {
+        super();
+        super.setAutoDelay(250);
+    }
     public RobotPlus(int mode) throws AWTException {
-        robot = new Robot();
+        super();
+        super.setAutoDelay(250);
         debug = ( mode == -1 ) ? true : false;
     }
+
+    //Frequently Used Functions
+    public int[] getMouseXY(){
+        Point p = MouseInfo.getPointerInfo().getLocation();
+        return new int[]{p.x, p.y};
+    }
+    
+    public void leftMouseClick(){ mouseClick(KeyEvent.BUTTON1_MASK);}
+    public void rightArrowPress(){ keyTap(KeyEvent.VK_RIGHT);}
+    public void leftMouseClick(int time, String unit){ mouseClickTimed(KeyEvent.BUTTON1_MASK, time, unit);}
+    public void rightArrowPress(int time, String unit){ keyTapTimed(KeyEvent.VK_RIGHT, time, unit);}
 
     public long duration(int time, String unit){
         //More options available in TimeUnit Class
@@ -35,7 +54,7 @@ public class RobotPlus
     }
 //Keyboard functions
     public void keyTap(int keycode){
-        robot.keyPress(keycode); robot.keyRelease(keycode);
+        super.keyPress(keycode); super.keyRelease(keycode);
     }
 
     public void keyTap(int keycode, int repeat){
@@ -51,7 +70,7 @@ public class RobotPlus
 
 //Mouse functions
     public void mouseClick(int button){
-        robot.mousePress(button); robot.mouseRelease(button);
+        super.mousePress(button); super.mouseRelease(button);
     }
 
     public void mouseClick(int button, int repeat){
@@ -65,15 +84,10 @@ public class RobotPlus
         while( target > System.nanoTime() ){ mouseClick(button); }
     }
 
-    //Frequently Used Functions
-    public void leftMouseClick(){ mouseClick(KeyEvent.BUTTON1_MASK);}
-    public void rightArrowPress(){ keyTap(KeyEvent.VK_RIGHT);}
-    public void leftMouseClick(int button, int time, String unit){ mouseClickTimed(KeyEvent.BUTTON1_MASK, time, unit);}
-    public void rightArrowPress(int button, int time, String unit){ keyTapTimed(KeyEvent.VK_RIGHT, time, unit);}
 
 //Parent Getters Setters
-    public void setActionDelay(int millisecond){ robot.setAutoDelay(millisecond); }
-    public int getActionDelay(){ return robot.getAutoDelay(); }
+    public void setActionDelay(int millisecond){ super.setAutoDelay(millisecond); }
+    public int getActionDelay(){ return super.getAutoDelay(); }
 
 //Syntax Beautifier Code
     static void println(Object o){ System.out.println(o);}
