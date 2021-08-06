@@ -1,7 +1,5 @@
 import java.awt.AWTException;
 import java.util.Scanner;
-import java.awt.event.KeyEvent;
-import java.awt.event.InputEvent;
 
 public class Driver 
 {
