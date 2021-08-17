@@ -18,11 +18,11 @@ public class RobotPlus extends Robot
     //Robot instantiation requires to catch an AWTException
     public RobotPlus() throws AWTException {
         super();
-        super.setAutoDelay(250);
+        super.setAutoDelay(150);
     }
     public RobotPlus(int mode) throws AWTException {
         super();
-        super.setAutoDelay(250);
+        super.setAutoDelay(150);
         debug = ( mode == -1 ) ? true : false;
     }
 
@@ -31,12 +31,20 @@ public class RobotPlus extends Robot
         Point p = MouseInfo.getPointerInfo().getLocation();
         return new int[]{p.x, p.y};
     }
-    
-    public void leftMouseClick(){ mouseClick(KeyEvent.BUTTON1_MASK);}
-    public void rightArrowPress(){ keyTap(KeyEvent.VK_RIGHT);}
-    public void leftMouseClick(int time, String unit){ mouseClickTimed(KeyEvent.BUTTON1_MASK, time, unit);}
-    public void rightArrowPress(int time, String unit){ keyTapTimed(KeyEvent.VK_RIGHT, time, unit);}
 
+    public void wait(int time, String unit){
+        long target = duration(time, unit);
+        while( target > System.nanoTime() ){} //waiting
+    }
+
+    public void leftMouseClick(){ mouseClick(KeyEvent.BUTTON1_MASK);}
+    
+    public void rightArrowPress(){ keyTap(KeyEvent.VK_RIGHT);}
+    
+    public void leftMouseClick(int time, String unit){ mouseClickTimed(KeyEvent.BUTTON1_MASK, time, unit);}
+    
+    public void rightArrowPress(int time, String unit){ keyTapTimed(KeyEvent.VK_RIGHT, time, unit);}
+    
     public long duration(int time, String unit){
         //More options available in TimeUnit Class
         switch(unit)
@@ -52,6 +60,7 @@ public class RobotPlus extends Robot
                 return 0;
         }
     }
+
 //Keyboard functions
     public void keyTap(int keycode){
         super.keyPress(keycode); super.keyRelease(keycode);
